@@ -11,6 +11,8 @@
 // @match        https://*.catwar.su/*
 // @updateURL    https://cw-mod.github.io/cw-mod/cwm.user.js
 // @downloadURL  https://cw-mod.github.io/cw-mod/cwm.user.js
+// @homepageURL  https://cw-mod.github.io/cw-mod/  // Страница с информацией
+// @supportURL   https://cw-mod.github.io/cw-mod/issues // Страница для репорта багов
 // @grant        none
 // ==/UserScript==
 
