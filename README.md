@@ -1,6 +1,6 @@
 # Варомод resurrection 🌠
 
-[Установить мод](https://cw-mod.github.io/cw-mod/cwm.js)
+[Установить мод](https://cw-mod.github.io/cw-mod/cwm.user.js)
 
 Оживляю Варомод 
 
