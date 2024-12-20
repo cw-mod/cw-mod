@@ -1933,13 +1933,13 @@ label { cursor: pointer; }
       if ($(this).attr('id') === 'f3') {
         if (e.ctrlKey) return;
         e.preventDefault();
-        history.pushState(null, null, 'https://catwar.net/ls?3');
+        history.pushState(null, null, `${baseUrl}/ls?3`);
         showSavedLsList();
       }
       else if ($(this).attr('id') === 's') {
         if (e.ctrlKey) return;
         e.preventDefault();
-        history.pushState(null, null, 'https://catwar.net/ls?search');
+        history.pushState(null, null, `${baseUrl}/ls?search`);
         showSearch();
       }
       else {
@@ -1951,11 +1951,11 @@ label { cursor: pointer; }
     const observer = new MutationObserver(function (mutations) {
       mutations.forEach(function () {
         if (enableSaving && isPage('ls?3')) {
-          history.pushState(null, null, 'https://catwar.net/ls?3');
+          history.pushState(null, null, `${baseUrl}/ls?3`);
           showSavedLsList();
         }
         else if (isPage('ls?search')) {
-          history.pushState(null, null, 'https://catwar.net/ls?search');
+          history.pushState(null, null, `${baseUrl}/ls?search`);
           showSearch();
         }
         else {
