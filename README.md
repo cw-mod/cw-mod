@@ -1,4 +1,4 @@
-# Варомод v.2025
+# Варомод resurrection 🌠
 
 [Установить мод](https://cw-mod.github.io/cw-mod/cwm.js)
 
