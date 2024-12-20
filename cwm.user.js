@@ -21,7 +21,8 @@
 
   if (typeof $ === 'undefined') return;
   
-  const baseUrl = `https://${window.location.hostname}`
+  const baseUrl = `https://${window.location.hostname}`;
+  const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`;
   
   const VERSION = '2.4.2';
 
@@ -732,7 +733,6 @@
   }
 
   function addCommentAvatars() {
-    const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`;
     $('.view-comment:not(.has-avatar)').each(function () {
       $(this).prepend('<div class="comment-avatar"></div>');
       const commentId = $(this).data('id');
@@ -3092,7 +3092,6 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   function setAvatar(catId, selector) {
     $.get('/cat' + catId.toString(),
       function (data) {
-        const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`
         const temp = $('<div/>', { html: data });
         let avatar = temp.find('[src*=avatar]').attr('src');
         if (!avatar) avatar = `${avatarDomain}/avatar/0.jpg`;
