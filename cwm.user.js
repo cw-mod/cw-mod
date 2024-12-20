@@ -9,8 +9,8 @@
 // @license      MIT; https://opensource.org/licenses/MIT
 // @match        https://*.catwar.net/*
 // @match        https://*.catwar.su/*
-// @updateURL    https://cw-mod.github.io/cw-mod/cwm.js
-// @downloadURL  https://cw-mod.github.io/cw-mod/cwm.js
+// @updateURL    https://cw-mod.github.io/cw-mod/cwm.user.js
+// @downloadURL  https://cw-mod.github.io/cw-mod/cwm.user.js
 // @grant        none
 // ==/UserScript==
 
