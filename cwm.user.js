@@ -732,6 +732,7 @@
   }
 
   function addCommentAvatars() {
+    const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`;
     $('.view-comment:not(.has-avatar)').each(function () {
       $(this).prepend('<div class="comment-avatar"></div>');
       const commentId = $(this).data('id');
@@ -742,7 +743,7 @@
       const storedAvatar = window.sessionStorage.getItem('avatar' + catId);
 
       if (catId === 0) {
-        avatarDiv.css('background-image', `url(//e.catwar.net/avatar/0.jpg)`);
+        avatarDiv.css('background-image', `${avatarDomain}/avatar/0.jpg`);
       } else if (storedAvatar) {
         avatarDiv.css('background-image', `url(${storedAvatar})`);
       } else {
@@ -1913,7 +1914,7 @@ label { cursor: pointer; }
       });
 
       if (isPage('ls?3')) showSavedLsList();
-      if (isPage(/^https:\/\/catwar.net\/ls\?id=\d+/)) changeMessagePage();
+      if (isPage(/^https:\/\/catwar\.(su|net)\/ls\?id=\d+/)) changeMessagePage();
 
       body.on('click', '.del-saved', function(){
         const lsId = $(this).data('id');
@@ -1963,7 +1964,7 @@ label { cursor: pointer; }
           hideSearch();
         }
         if (isPage('ls?new')) addBBcode();
-        if (enableSaving && isPage(/^https:\/\/catwar.net\/ls\?id=\d+/)) changeMessagePage();
+        if (enableSaving && isPage(/^https:\/\/catwar\.(su|net)\/ls\?id=\d+/)) changeMessagePage();
       });
     });
     observer.observe($('#main')[0], { childList: true });
@@ -3010,7 +3011,8 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 
   function isPage(page, match) {
     if (page instanceof RegExp) return page.test(window.location.href);
-    const re = new RegExp('catwar\.net/' + page.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + (match ? '(#.*)?$' : ''));
+    const domain = window.location.hostname.replace('www.', ''); // Убираем 'www.' если оно присутствует
+    const re = new RegExp(`${domain}/` + page.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + (match ? '(#.*)?$' : ''));
     return re.test(window.location.href);
   }
 
@@ -3090,9 +3092,10 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   function setAvatar(catId, selector) {
     $.get('/cat' + catId.toString(),
       function (data) {
+        const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`
         const temp = $('<div/>', { html: data });
         let avatar = temp.find('[src*=avatar]').attr('src');
-        if (!avatar) avatar = '//e.catwar.net/avatar/0.jpg';
+        if (!avatar) avatar = `${avatarDomain}/avatar/0.jpg`;
         try {
           window.sessionStorage.setItem('avatar' + catId, avatar);
         } catch (err) { }
