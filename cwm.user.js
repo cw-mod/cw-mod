@@ -7,7 +7,8 @@
 // @author       Fredo14
 // @copyright    2019—2020, Хвойница (https://catwar.net/cat209467); Исправления Ромашковый (https://catwar.net/cat965285)
 // @license      MIT; https://opensource.org/licenses/MIT
-// @match        https://*.catwar.*/*
+// @match        https://*.catwar.net/*
+// @match        https://*.catwar.su/*
 // @updateURL    https://cw-mod.github.io/cw-mod/cwm.user.js
 // @downloadURL  https://cw-mod.github.io/cw-mod/cwm.user.js
 // @homepageURL  https://cw-mod.github.io/cw-mod/  // Страница с информацией
