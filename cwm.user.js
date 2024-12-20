@@ -7,8 +7,7 @@
 // @author       Fredo14
 // @copyright    2019—2020, Хвойница (https://catwar.net/cat209467); Исправления Ромашковый (https://catwar.net/cat965285)
 // @license      MIT; https://opensource.org/licenses/MIT
-// @match        https://*.catwar.net/*
-// @match        https://*.catwar.su/*
+// @match        https://*.catwar.*/*
 // @updateURL    https://cw-mod.github.io/cw-mod/cwm.user.js
 // @downloadURL  https://cw-mod.github.io/cw-mod/cwm.user.js
 // @homepageURL  https://cw-mod.github.io/cw-mod/  // Страница с информацией
@@ -20,7 +19,9 @@
   'use strict';
 
   if (typeof $ === 'undefined') return;
-
+  
+  const baseUrl = `https://${window.location.hostname}`
+  
   const VERSION = '2.4.2';
 
   const CONF_BLOGS_TAGS_OPEN = 'blogs_tags_open';
@@ -2705,6 +2706,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   <div class="cwmod-data-result" data-result="settings"></div>
 
   <h3><a href="/blog482084">Блог Варомода</a>(утеряно) <a href="https://cw-mod.github.io/cw-mod/" target="_blanc">Страничка восстанавливающегося мода</a> </h3>
+  <p>Вы находитесь на ${baseUrl}</p>
 
 </div>
 `;
