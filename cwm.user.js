@@ -2702,7 +2702,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   <p><input class="cwmod-data-merge" data-merge="settings" type="button" value="Обновить"></p>
   <div class="cwmod-data-result" data-result="settings"></div>
 
-  <h3><a href="/blog482084">Блог Варомода</a></h3>
+  <h3><a href="/blog482084">Блог Варомода</a>(утеряно) <a href="https://cw-mod.github.io/cw-mod/" target="_blanc">Страничка восстанавливающегося мода</a> </h3>
 
 </div>
 `;
