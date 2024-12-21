@@ -1532,7 +1532,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             }
             else if (isThirst) {
               const time = Math.ceil((100 - percent) * 9 / 100) * 15;
-              text += `<br>До ${secToTime(maxTime)} питья`;
+              text += `<br>До ${secToTime(time)} питья`;
             }
             else if (isNeed) {
               const maxTime = (100 - red) * 30 + 10;
