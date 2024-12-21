@@ -1504,13 +1504,13 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           let red = parseInt(barFill[0].style.width);
 
           if (Number.isNaN(red)) text += 'Ошибка, попробуйте снова';
-          else if (red === 0) {
+          else if (red === 100) {
             if (isDream && $('.dey[data-id="1"]').length) text += `<span style="color: darkred">100 %</span><br>10 c сна`;
             else if (isThirst && $('.dey[data-id="5"]').length) text += `<span style="color: darkred">100 %</span><br>До 30 c питья`;
             else if (isNeed && $('.dey[data-id="4"]').length) text += `<span style="color: darkred">100 %</span><br>10 c дел в грязном месте`;
             else text += '100 %';
           }
-          else if (red === 150) {
+          else if (red === 0) {
             text += '<span style="color: darkred">0 %</span>';
             if (isDream) text += `<br>${secToTime(150 * 20)} сна или более`;
             if (isThirst) text += `<br>${secToTime(150 * 60 - 30)} питья или более`;
