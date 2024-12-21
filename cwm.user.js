@@ -1496,7 +1496,8 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             isHunger = (param === 'hunger'),
             isThirst = (param === 'thirst'),
             isNeed = (param === 'need'),
-            isClean = (param === 'clean');
+            isClean = (param === 'clean'),
+            isHealth = (param === 'health');
           text += `<br><b>${params[i]}</b><br>`;
           
           const barFill = $('#' + param).find(".bar-fill").last();
@@ -1516,26 +1517,29 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             if (isNeed) text += `<br>${secToTime(150 * 30 - 10)} дел в грязном месте или более`;
           }
           else {
-            const percent = isClean ? Math.floor((150 - red) / 1.5) : Math.round((150 - red) / 1.5 * 100) / 100;
-            text += `<span style="color: darkred">${percent}%</span> (−${red}px)`;
+            let percent = 100 - red;
+            if (isHealth || isNeed || isClean) {
+              percent = red
+            }
+            text += `<span style="color: darkred">${percent}%</span> (${red}px)`;
             if (isDream) {
               const maxTime = red * 20 + 10;
               text += `<br>До ${secToTime(maxTime)} сна`;
             }
-            else if (isHunger) {
+            else if (isHunger || isThirst) {
               const time = Math.ceil((100 - percent) * 9 / 100) * 15;
               text += `<br>${secToTime(time)} поглощения пищи`;
             }
             else if (isThirst) {
-              const maxTime = red * 60 + 30;
+              const maxTime = (100 - red) * 60 + 30;
               text += `<br>До ${secToTime(maxTime)} питья`;
             }
             else if (isNeed) {
-              const maxTime = red * 30 + 10;
+              const maxTime = (100 - red) * 30 + 10;
               text += `<br>До ${secToTime(maxTime)} дел в грязном месте`;
             }
-            else if (isClean && red <= 75) {
-              text += `<br>Вылизываться ${secToTime((100 - percent) * 100)}`;
+            else if (isClean && red <= 25) {
+              text += `<br>Вылизываться ${secToTime((percent) * 100)}`;
             }
           }
         });
