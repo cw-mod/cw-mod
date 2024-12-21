@@ -1526,12 +1526,12 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
               const maxTime = red * 20 + 10;
               text += `<br>До ${secToTime(maxTime)} сна`;
             }
-            else if (isHunger || isThirst) {
+            else if (isHunger) {
               const time = Math.ceil((100 - percent) * 9 / 100) * 15;
               text += `<br>${secToTime(time)} поглощения пищи`;
             }
             else if (isThirst) {
-              const maxTime = (100 - red) * 60 + 30;
+              const time = Math.ceil((100 - percent) * 9 / 100) * 15;
               text += `<br>До ${secToTime(maxTime)} питья`;
             }
             else if (isNeed) {
@@ -1540,6 +1540,9 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             }
             else if (isClean && red <= 25) {
               text += `<br>Вылизываться ${secToTime((percent) * 100)}`;
+            }
+            else if (isHealth && red <= 50) {
+              text += `<br>Не болейте...`;
             }
           }
         });
