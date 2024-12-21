@@ -1498,7 +1498,9 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             isNeed = (param === 'need'),
             isClean = (param === 'clean');
           text += `<br><b>${params[i]}</b><br>`;
-          let red = parseInt($('#' + param).find("td").last()[0].style.width);
+          
+          const barFill = $('#' + param).find(".bar-fill").last();
+          let red = parseInt(barFill[0].style.width);
 
           if (Number.isNaN(red)) text += 'Ошибка, попробуйте снова';
           else if (red === 0) {
