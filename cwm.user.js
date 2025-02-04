@@ -2,7 +2,7 @@
 // @name         CatWar Mod
 // @name:ru      Варомод
 // @namespace    https://catwar.net/blog482084; Удален Хвойницей
-// @version      24.12.21
+// @version      25.2.5
 // @description  Полезные дополнения для catwar.su
 // @author       Fredo14
 // @copyright    2019—2020, Хвойница (https://catwar.net/cat209467); Исправления Ромашковый (https://catwar.net/cat965285)
@@ -20,10 +20,10 @@
   'use strict';
 
   if (typeof $ === 'undefined') return;
-  
+
   const baseUrl = `https://${window.location.hostname}`;
   const avatarDomain = `//e.${window.location.hostname.replace('www.', '')}`;
-  
+
   const VERSION = '2.4.2';
 
   const CONF_BLOGS_TAGS_OPEN = 'blogs_tags_open';
@@ -124,7 +124,7 @@
 
   DEFAULTS[CONF_CW3_ACT_END_IN_TITLE] = false;
   DEFAULTS[CONF_CW3_ACT_END_ALERT] = false;
-  DEFAULTS[CONF_CW3_ACT_END_ALERT_SOUND] = 'https://porch.website/cwmod/ding.mp3';
+  DEFAULTS[CONF_CW3_ACT_END_ALERT_SOUND] = 'https://cw-mod.github.io/cw-mod/resources/cat-meow-squeak.mp3';
   DEFAULTS[CONF_CW3_ACT_END_ALERT_VOLUME] = 1;
   DEFAULTS[CONF_CW3_ACT_END_ALERT_TIME] = 1;
   DEFAULTS[CONF_CW3_ACT_END_ALERT_BLUR_ONLY] = false;
@@ -168,16 +168,28 @@
   DEFAULTS[CONF_CW3_MENU_SETTINGS] = true;
   DEFAULTS[CONF_CW3_MENU_MOBILE] = false;
 
-
   let SETTINGS = {};
   let thisPageSettings = [];
 
-  const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+  const months = [
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря',
+  ];
   const catTimeStart = 1200000000000;
 
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
 
-  const isDesktop = isPage(/cw3\/(?!(kns|jagd))/) ? ($('#app').data('mobile') === 0) : ($('#branch').length);
+  const isDesktop = isPage(/cw3\/(?!(kns|jagd))/) ? $('#app').data('mobile') === 0 : $('#branch').length;
 
   const body = $('body');
 
@@ -187,7 +199,7 @@
       let offset = d.getTimezoneOffset();
       const sign = offset < 0 ? '+' : '-';
       d.setUTCMinutes(d.getUTCMinutes() - d.getTimezoneOffset());
-      offset = ('0' + (offset / 60 | 0)).slice(-2) + ('0' + (offset % 60)).slice(-2);
+      offset = ('0' + ((offset / 60) | 0)).slice(-2) + ('0' + (offset % 60)).slice(-2);
       return d.toISOString().replace(/Z\s*/i, '') + sign + offset;
     };
   }
@@ -198,23 +210,19 @@
     changeAllPages();
     if (isPage(/cw3\/(?!(kns|jagd))/)) {
       changeCW3Page();
-    }
-    else if (isPage('cw3/kns')) {
+    } else if (isPage('cw3/kns')) {
       changeKnsPage();
-    }
-    else {
+    } else {
       if ((isPage('', true) || isPage('index')) && $('#act_name b').length) {
         changeIndexPage();
-      }
-      else if (isPage(/cat(\d+|\/.+)/)) changeCatPage();
+      } else if (isPage(/cat(\d+|\/.+)/)) changeCatPage();
       else if (isPage('fae')) changeFaePage();
       else if (isPage('chat')) changeChatPage();
       else if (isPage('ls')) changeLsPage();
       else if (isPage('ideas', true)) changeIdeasPage();
       else if (isPage(/blog(?!sea)/) || isPage('sniff') || isPage('idea')) {
         changeAllBlogsPages();
-      }
-      else if (isPage('settings', true)) changeSettingsPage();
+      } else if (isPage('settings', true)) changeSettingsPage();
     }
   } catch (err) {
     window.console.error('Варомод:', err);
@@ -311,7 +319,8 @@
         Object.keys(newValue).forEach(function (key) {
           if (thisPageSettings.indexOf(key) !== -1) {
             if (oldValue[key] !== newValue[key]) {
-              let text = 'Настройки Варомода для этой страницы были изменены. Обновить страницу прямо сейчас, чтобы применить их?';
+              let text =
+                'Настройки Варомода для этой страницы были изменены. Обновить страницу прямо сейчас, чтобы применить их?';
               showCwmodPopup('reload', text);
             }
           }
@@ -391,16 +400,16 @@
     });
 
     if (getSettings(CONF_CAT_ENABLE_NOTES)) {
-      body.on('mouseenter', 'a:not(.headers)', function() {
+      body.on('mouseenter', 'a:not(.headers)', function () {
         const th = $(this);
         const href = th.attr('href');
         if (!/cat\d+/.test(href)) return;
-        const catId = /\d+/.exec(href)[0]; 
+        const catId = /\d+/.exec(href)[0];
         const note = getNoteByCatId(catId);
         if (note) th.attr('title', note);
       });
     }
-    body.on('mouseenter', '.headers', function() {
+    body.on('mouseenter', '.headers', function () {
       $(this).attr('title', 'Это раскрывающийся блок');
     });
   }
@@ -426,11 +435,11 @@
         }
 
         const birthDateString = infoText.match(/\d{4}-\d\d-\d\d \d\d:\d\d/)[0].replace(' ', 'T');
-        const nowDateString = dateToString(new Date);
+        const nowDateString = dateToString(new Date());
         const moonsNow = getMoonsFromDate(birthDateString, nowDateString);
         let bornWord;
         const sex = $('[src^="/avatar/"]').first()[0].style.borderColor;
-        const isRegDate = (/регистрац/.test(infoText) && $('#age2_icon').length);
+        const isRegDate = /регистрац/.test(infoText) && $('#age2_icon').length;
         switch (sex) {
           case 'pink':
             bornWord = isRegDate ? 'Зарегистрировалась' : 'Родилась';
@@ -442,7 +451,9 @@
             bornWord = isRegDate ? 'Зарегистрировалось' : 'Родилoсь';
         }
         const catTime = timestampToCatTime(Date.parse(birthDateString));
-        const catTimeString = `${catTime.day} ${months[catTime.month]} ${catTime.year} года в ${leadingZero(catTime.hour)}:${leadingZero(catTime.minute)}`;
+        const catTimeString = `${catTime.day} ${months[catTime.month]} ${catTime.year} года в ${leadingZero(
+          catTime.hour
+        )}:${leadingZero(catTime.minute)}`;
         $('#calc-age').html(`
 <p><b>Калькулятор возраста</b></p>
 <label>Дата и время: <input type="datetime-local" id="calc-date" min="${birthDateString}" value="${nowDateString}" max="9999-31-12T23:59"></label> <span id="calc-error-date" class="calc-error"></span>
@@ -492,7 +503,7 @@
   function getMoonsFromDate(birthDateString, dateString) {
     const birthday = Date.parse(birthDateString);
     const date = Date.parse(dateString);
-    const moons = Math.floor(convertTime('ms d', date - birthday) / 4 * 10) / 10;
+    const moons = Math.floor((convertTime('ms d', date - birthday) / 4) * 10) / 10;
     return moons;
   }
 
@@ -584,8 +595,7 @@
       mutations.forEach(function () {
         if ($('#creation').css('display') === 'none') {
           window.removeEventListener('beforeunload', beforeunload);
-        }
-        else {
+        } else {
           changeCreationPage();
         }
       });
@@ -597,7 +607,9 @@
 
   function changeMainPage() {
     $('#search > form > input[type="text"]').attr('placeholder', 'Поиск по ключевым словам');
-    $('#search').append(`<p><input id="search-tag" type="text" size="35" placeholder="Поиск по тегу"> <input id="search-ok" type="button" value="Искать"></p>`);
+    $('#search').append(
+      `<p><input id="search-tag" type="text" size="35" placeholder="Поиск по тегу"> <input id="search-ok" type="button" value="Искать"></p>`
+    );
 
     $('#search-ok').click(function () {
       searchByTag($('#search-tag').val());
@@ -623,7 +635,7 @@
     const WS = io.connect(window.location.origin, {
       path: '/ws/blogs/socket.io',
       reconnectionDelay: 10000,
-      reconnectionDelayMax: 20000
+      reconnectionDelayMax: 20000,
     });
 
     WS.on('creation preview', function (data) {
@@ -632,7 +644,7 @@
     });
 
     $('#comment-preview').click(function () {
-      WS.emit("creation preview", $('#comment').val());
+      WS.emit('creation preview', $('#comment').val());
     });
 
     $('#send_comment_form [type="submit"]').click(hideCommentPreview);
@@ -677,15 +689,15 @@
         const anchor = {
           elem: sel.anchorNode,
           isComment: false,
-          id: 0
+          id: 0,
         };
         const focus = {
           elem: sel.focusNode,
           isComment: false,
-          id: 0
+          id: 0,
         };
 
-        while (anchor.elem = anchor.elem.parentElement) {
+        while ((anchor.elem = anchor.elem.parentElement)) {
           if (anchor.elem.classList.contains('comment-text')) anchor.isComment = true;
           if (anchor.elem.dataset.id) {
             anchor.id = anchor.elem.dataset.id;
@@ -693,7 +705,7 @@
           }
         }
 
-        while (focus.elem = focus.elem.parentElement) {
+        while ((focus.elem = focus.elem.parentElement)) {
           if (focus.elem.classList.contains('comment-text')) focus.isComment = true;
           if (focus.elem.dataset.id) {
             focus.id = focus.elem.dataset.id;
@@ -768,7 +780,7 @@
       }
       if (addCite) {
         html += '<span class="comment-cite-wrap">';
-        if (addAnswer && notMyComment) html += ' | '
+        if (addAnswer && notMyComment) html += ' | ';
         html += `<a class="comment-cite" href="#">${citeButton}</a></span>`;
       }
       $(this).append(html).addClass('has-buttons');
@@ -780,7 +792,8 @@
     const num = commentInfo.children('b').children('.num').text();
 
     let author;
-    if (commentInfo.children('.author').length) author = '[link' + getNumber(commentInfo.children('.author').attr('href')) + ']';
+    if (commentInfo.children('.author').length)
+      author = '[link' + getNumber(commentInfo.children('.author').attr('href')) + ']';
     else author = '[b][code]' + commentInfo.children('span').first().text() + '[/code][/b]';
 
     let quote;
@@ -793,8 +806,7 @@
       const date = findDate(commentInfo.html());
 
       quote = `[table][tr][td][size=10][i]Цитата:[/i] [b]#${num}[/b] ${date} @ ${author}[/size][/td][/tr][tr][td][table=0][tr][td]  [/td][td]${text}[/td][/tr][/table][/td][/tr][/table]`;
-    }
-    else {
+    } else {
       quote = `${author} (#${num}), `;
     }
 
@@ -807,7 +819,6 @@
     if (getSettings(CONF_CREATION_SAVE_ALERT)) addSaveAlert();
 
     if (isPage('blogs?creation', true) || isPage('sniff?creation', true)) {
-
       const blogsTags = `
 <details id="add-tags"${getSettings(CONF_BLOGS_TAGS_OPEN) ? ' open' : ''}>
 <summary class="cwmod-settings" data-conf="${CONF_BLOGS_TAGS_OPEN}"><b>Добавить теги</b></summary>
@@ -944,7 +955,18 @@
 
     if ($('[src="img/icon_kraft.png"]').length) {
       if (getSettings(CONF_CAT_ADD_KRAFT_NUMBER)) {
-        const kraftArr = ['блоха', 'котёночек', 'задира', 'гроза детской', 'страх барсуков', 'победитель псов', 'защитник племени', 'великий воин', 'достоин Львиного племени', 'идеальная'];
+        const kraftArr = [
+          'блоха',
+          'котёночек',
+          'задира',
+          'гроза детской',
+          'страх барсуков',
+          'победитель псов',
+          'защитник племени',
+          'великий воин',
+          'достоин Львиного племени',
+          'идеальная',
+        ];
         const b = $('[src="img/icon_kraft.png"]').parent().siblings().children('b');
         b.append(' (' + kraftArr.indexOf(b.text()) + ')');
       }
@@ -955,12 +977,15 @@
       if (isDesktop) {
         p = $('#branch > p').first();
         catId = p.data('cat');
-        $('#branch').prepend(`<textarea id="note" placeholder="Заметка об игроке. Её можете видеть только вы" style="float: right; min-width: 100px; width: 250px; max-width: 500px; height: 100px;"></textarea>`);
-      }
-      else {
+        $('#branch').prepend(
+          `<textarea id="note" placeholder="Заметка об игроке. Её можете видеть только вы" style="float: right; min-width: 100px; width: 250px; max-width: 500px; height: 100px;"></textarea>`
+        );
+      } else {
         p = $('#site_table > p').first();
         catId = p.data('cat');
-        p.append(`<textarea id="note" placeholder="Заметка об игроке. Её можете видеть только вы" style="display: block; width: calc(100% - 10px); height: 50px;"></textarea>`);
+        p.append(
+          `<textarea id="note" placeholder="Заметка об игроке. Её можете видеть только вы" style="display: block; width: calc(100% - 10px); height: 50px;"></textarea>`
+        );
       }
 
       const oldText = getNoteByCatId(catId);
@@ -979,7 +1004,11 @@
 
     if (medals.length) {
       let lastpic = false;
-      medals.last().after(`<div id="infomedal" style="display: none; margin: 5px; padding: 5px; border-radius: 10px; width: 270px; background: rgba(255, 255, 255, 0.3); color: black;"></div>`);
+      medals
+        .last()
+        .after(
+          `<div id="infomedal" style="display: none; margin: 5px; padding: 5px; border-radius: 10px; width: 270px; background: rgba(255, 255, 255, 0.3); color: black;"></div>`
+        );
       const info = $('#infomedal');
 
       $.getJSON('https://porch.website/get?file=medals&type=json', function (data) {
@@ -1012,8 +1041,10 @@
                   else color = 'gray';
                   about += `<br>Статус: <b style="color: ${color}">${status}</b>`;
                 }
-                if (transfer === 'возможен') about += `<br>Перенос на другого персонажа <b style="color: green">возможен</b>`;
-                else if (transfer === 'невозможен') about += `<br>Перенос на другого персонажа <b style="color: #ba0000">невозможен</b>`;
+                if (transfer === 'возможен')
+                  about += `<br>Перенос на другого персонажа <b style="color: green">возможен</b>`;
+                else if (transfer === 'невозможен')
+                  about += `<br>Перенос на другого персонажа <b style="color: #ba0000">невозможен</b>`;
                 about += '</span>';
 
                 if (getting) about += `<br><span style="white-space:pre-wrap">${getting}</span>`;
@@ -1021,8 +1052,7 @@
                 if (whose === 'Сайтовая') about += `<br><span style="font-size: 0.9em">Это сайтовая медаль.</span>`;
               }
               info.html(`Медаль № ${pic}${about}`);
-            }
-            else {
+            } else {
               info.html(`Медаль № ${pic}<br><b>${$(this).attr('alt')}</b><br><i>Нет информации</i>`);
             }
           }
@@ -1032,7 +1062,9 @@
   }
 
   function changeChatPage() {
-    addCSS(`.tabName, #confirm_text, .mess_tr[style^="background: rgb(255, 204, 153)"] { color: black; } .mess_tr[style^="background: rgb(255, 204, 153)"] a { color: #003; }`);
+    addCSS(
+      `.tabName, #confirm_text, .mess_tr[style^="background: rgb(255, 204, 153)"] { color: black; } .mess_tr[style^="background: rgb(255, 204, 153)"] a { color: #003; }`
+    );
     addBBcode(1);
 
     const key = 'cwmod_saved_chat';
@@ -1103,7 +1135,7 @@
         }
         .d > div {
           opacity: 0;
-        }`;      
+        }`;
     }
 
     if (getSettings(CONF_CW3_CAGES_BORDERS)) {
@@ -1158,44 +1190,46 @@
 #location { visibility: visible; position: fixed; right: 15px; top: 5px; z-index: 5; padding: 0 5px; font-weight: bold; font-size: 1.5em; background-color: #ffdead; }
 h2 { font-size: 1.2em; }
 `;
-      const splitInfo = (getSettings(CONF_CW3_COMPACT_SPLIT_INFO));
-      const sticky = (getSettings(CONF_CW3_COMPACT_SPLIT_INFO_STICKY_HEADERS));
-      if (isDesktop) css += `
+      const splitInfo = getSettings(CONF_CW3_COMPACT_SPLIT_INFO);
+      const sticky = getSettings(CONF_CW3_COMPACT_SPLIT_INFO_STICKY_HEADERS);
+      if (isDesktop)
+        css += `
 #chat_form { grid-template-columns: auto auto; }
-#info_main > tbody > tr { display: grid; max-height: 1000px; grid-template-areas: 'parameter' 'history' 'family'; grid-template-rows: ${splitInfo ? '252px 1fr 1fr' : 'auto auto auto'}; grid-row-gap: 5px; }
+#info_main > tbody > tr { display: grid; max-height: 1000px; grid-template-areas: 'parameter' 'history' 'family'; grid-template-rows: ${
+          splitInfo ? '252px 1fr 1fr' : 'auto auto auto'
+        }; grid-row-gap: 5px; }
 #family.infos { grid-area: family; overflow: auto; }
 #history.infos { grid-area: history; overflow: auto; }
 #parameter.infos { grid-area: parameter; overflow: auto; }
 `;
-      else css += `
+      else
+        css += `
 #chat_form { grid-template-columns: auto auto auto; }
-#info_main > tbody { display: grid; max-height: 1000px; grid-template-areas: 'parameter' 'history' 'family'; grid-template-rows: ${splitInfo ? '252px 1fr 1fr' : 'auto auto auto'}; grid-row-gap: 5px; }
+#info_main > tbody { display: grid; max-height: 1000px; grid-template-areas: 'parameter' 'history' 'family'; grid-template-rows: ${
+          splitInfo ? '252px 1fr 1fr' : 'auto auto auto'
+        }; grid-row-gap: 5px; }
 #info_main > tbody > tr:nth-child(1) { grid-area: parameter; overflow: auto; }
 #info_main > tbody > tr:nth-child(2) { grid-area: history; overflow: auto; }
 #info_main > tbody > tr:nth-child(3) { grid-area: family; overflow: auto; }
 `;
-      const hideHeaders = (getSettings(CONF_CW3_COMPACT_HIDE_HEADERS));
+      const hideHeaders = getSettings(CONF_CW3_COMPACT_HIDE_HEADERS);
       if (hideHeaders) {
         css += `
 #info_main h2 { visibility: hidden; }
 #parameters-alert { visibility: visible; }
 `;
-      }
-      else if (splitInfo && sticky) {
+      } else if (splitInfo && sticky) {
         css += `#info_main h2 { position: sticky; }`;
       }
-      const swap = (getSettings(CONF_CW3_COMPACT_SWAP_SIDES));
-      const chatup = (getSettings(CONF_CW3_COMPACT_CHAT_ON_TOP));
+      const swap = getSettings(CONF_CW3_COMPACT_SWAP_SIDES);
+      const chatup = getSettings(CONF_CW3_COMPACT_CHAT_ON_TOP);
       if (swap && chatup) {
         css += `#main_table > tbody { grid-template-areas: 'info field tos' 'info field chat' 'info field actions' 'info field mouth'; grid-template-rows: 25px 425px 267.5px 267.5px; }`;
-      }
-      else if (swap && !chatup) {
+      } else if (swap && !chatup) {
         css += `#main_table > tbody { grid-template-areas: 'info field tos' 'info field actions' 'info field mouth' 'info field chat'; grid-template-rows: 25px 267.5px 267.5px 425px; }`;
-      }
-      else if (!swap && chatup) {
+      } else if (!swap && chatup) {
         css += `#main_table > tbody { grid-template-areas: 'tos field info' 'chat field info' 'actions field info' 'mouth field info'; grid-template-rows: 25px 425px 267.5px 267.5px; }`;
-      }
-      else {
+      } else {
         css += `#main_table > tbody { grid-template-areas: 'tos field info' 'actions field info' 'mouth field info' 'chat field info'; grid-template-rows: 25px 267.5px 267.5px 425px; }`;
       }
 
@@ -1224,8 +1258,8 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
 `;
     const theme = getSettings(CONF_CW3_THEME);
     const themes = {
-      'dark_grey': `:root { --table-bg: #222; --error-bg: #3c1e1e; --error-color: #ccc; --main-bg: #222; --hr-color: #282828; --body-bg: #191919; --text-color: #b2b2b2; --a-color: #b2b2b2; --myname-color: black; --myname-bg: #a73; --input-bg: #111; --handle-bg: #383838; --input-color: #aaa; --input-border-color: #282828; }`
-      , 'black_glass': `:root { --table-bg: #000d; --error-bg: #3c1e1e; --error-color: #ccc; --main-bg: none; --hr-color: #000; --body-bg: #4d4e4f; --text-color: #b2b2b2; --a-color: #b2b2b2; --myname-color: black; --myname-bg: #a73; --input-bg: #111; --handle-bg: #333; --input-color: #ccc; --input-border-color: #000; }`
+      dark_grey: `:root { --table-bg: #222; --error-bg: #3c1e1e; --error-color: #ccc; --main-bg: #222; --hr-color: #282828; --body-bg: #191919; --text-color: #b2b2b2; --a-color: #b2b2b2; --myname-color: black; --myname-bg: #a73; --input-bg: #111; --handle-bg: #383838; --input-color: #aaa; --input-border-color: #282828; }`,
+      black_glass: `:root { --table-bg: #000d; --error-bg: #3c1e1e; --error-color: #ccc; --main-bg: none; --hr-color: #000; --body-bg: #4d4e4f; --text-color: #b2b2b2; --a-color: #b2b2b2; --myname-color: black; --myname-bg: #a73; --input-bg: #111; --handle-bg: #333; --input-color: #ccc; --input-border-color: #000; }`,
     };
 
     if (theme !== 'default') {
@@ -1246,9 +1280,9 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           });
         });
         cagesDivObserver.observe($('#cages_div')[0], { attributes: true });
-        
+
         const pageObserver = new MutationObserver(function (mutations) {
-          mutations.forEach(function() {
+          mutations.forEach(function () {
             if (body.text() === 'Вы открыли новую вкладку с Игровой, поэтому старая (эта) больше не работает.') {
               body.css('background-image', 'none');
               cagesDivObserver.disconnect();
@@ -1257,8 +1291,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           });
         });
         pageObserver.observe(document.body, { childList: true });
-      }
-      else {
+      } else {
         addCSS(`body { background-image: url(${getSettings(CONF_CW3_BACKGROUND_IMAGE)}); }`);
       }
     }
@@ -1305,14 +1338,19 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         if (isDesktop && getSettings(CONF_CW3_COMPACT)) {
           if (node.classList.contains('catWithArrow')) {
             let padding = 0;
-            $('#cages').children('tbody').children('tr').last().children().each(function () {
-              const tooltip = $(this).find('.cat_tooltip');
-              if (tooltip.length && tooltip.height() > padding) {
-                padding = tooltip.height();
-              }
-            });
+            $('#cages')
+              .children('tbody')
+              .children('tr')
+              .last()
+              .children()
+              .each(function () {
+                const tooltip = $(this).find('.cat_tooltip');
+                if (tooltip.length && tooltip.height() > padding) {
+                  padding = tooltip.height();
+                }
+              });
             padding += 50;
-            body.css('padding-bottom', padding + 'px')
+            body.css('padding-bottom', padding + 'px');
           }
         }
 
@@ -1320,11 +1358,9 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           let arrow;
           if (node.classList.contains('catWithArrow')) {
             arrow = $(node).children('div').children('.arrow');
-          }
-          else if (mutation.target.classList.contains('catWithArrow')) {
+          } else if (mutation.target.classList.contains('catWithArrow')) {
             arrow = $(node).children('.arrow');
-          }
-          else return;
+          } else return;
 
           if (!arrow.length) return;
 
@@ -1360,25 +1396,48 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         isWindowActive = false;
       });
 
-      const deysObserver = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          if (mutation.target.id === 'block_mess' && !$('#sek').length) {
-            if (changeTitle) document.title = 'Игровая / CatWar';
-          }
-          else if (mutation.target.id === 'sek' && mutation.addedNodes.length) {
-            const timeLeft = $('#sek').text();
-            if (changeTitle) document.title = timeLeft;
+      const deysObserver = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          const blockMess = document.querySelector('#block_mess');
+          const blockDeys = document.querySelector('#block_deys');
+
+          if (blockMess) {
+            const timerRegex = /(?:\d+\s*мин\s*)?\d+\s*с/;
+            const timeLeftMatch = blockMess.textContent.match(timerRegex);
+            const timeLeft = timeLeftMatch ? timeLeftMatch[0] : 'Игровая / CatWar';
+
+            if (changeTitle) {
+              document.title = timeLeft;
+            }
 
             if (getSettings(CONF_CW3_ACT_END_ALERT)) {
               const alertTime = new RegExp('^' + getSettings(CONF_CW3_ACT_END_ALERT_TIME) + ' .?с');
-              if (alertTime.test(timeLeft) && (!isWindowActive || !blurOnly || $('#cwmod-popup-wrap').css('display') === 'flex')) {
+              if (
+                alertTime.test(timeLeft) &&
+                (!isWindowActive || !blurOnly || $('#cwmod-popup-wrap').css('display') === 'flex')
+              ) {
                 audio.play();
               }
+            }
+          } else if (blockDeys) {
+            if (changeTitle) {
+              document.title = 'Игровая / CatWar';
             }
           }
         });
       });
-      deysObserver.observe($('#block_mess')[0], { childList: true, subtree: true });
+
+      const trActions = document.querySelector('#tr_actions');
+      if (trActions) {
+        const tdElement = trActions.querySelector('td');
+        if (tdElement) {
+          deysObserver.observe(tdElement, {
+            childList: true,
+            subtree: true,
+            characterData: true,
+          });
+        }
+      }
     }
 
     const DiseasesLevels = {};
@@ -1397,7 +1456,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         const link = cat.find('a').first();
         const catName = link.text();
         const catId = /\d+/.exec(link.attr('href'))[0];
-        const sex = (/Его запах/.exec(html));
+        const sex = /Его запах/.exec(html);
 
         const catElHtml = catEl.parent().html();
         let height = catEl.css('background-size');
@@ -1411,16 +1470,16 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         dirt = dirt ? Number(dirt[1]) : false;
         drown = drown ? Number(drown[1]) : false;
         trauma = trauma ? Number(trauma[1]) : false;
-        const poisoning = (/poisoning/.exec(catElHtml));
-        const disease = (/disease/.exec(catElHtml));
-        const beddings = (/costume\/295\.png/.exec(catElHtml));
+        const poisoning = /poisoning/.exec(catElHtml);
+        const disease = /disease/.exec(catElHtml);
+        const beddings = /costume\/295\.png/.exec(catElHtml);
 
         let text = `<div style="background: bottom right / 45px no-repeat url(composited/${image}.png);">`;
         text += `<a href="/cat${catId}"><b>${catName}</b></a> (ID ${catId})<br><a target="_blank" href="/cw3/composited/${image}.png">Окрас</a>`;
         text += `<br>Рост: ${height}`;
         text += dirt ? `<br>Грязь ${dirt} степени (${DiseasesLevels.dirt[dirt - 1]})` : '';
         text += beddings ? `<br>Убирает подстилки` : '';
-        text += (wound || drown || trauma || poisoning || disease) ? `<br>Болезни:` : `<br>Здоров` + (sex ? '' : 'а');
+        text += wound || drown || trauma || poisoning || disease ? `<br>Болезни:` : `<br>Здоров` + (sex ? '' : 'а');
         text += wound ? `<br>— Раны ${wound} степени (${DiseasesLevels.wound[wound - 1]})` : '';
         text += drown ? `<br>— Травмы от утопления ${drown} степени (${DiseasesLevels.drown[drown - 1]})` : '';
         text += trauma ? `<br>— Переломы ${trauma} степени (${DiseasesLevels.trauma[trauma - 1]})` : '';
@@ -1429,7 +1488,8 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         text += `</div>`;
 
         catInfos[catId] = text;
-        if (!cat.find('.show-more').length) cat.find('.online').before(`<a class="show-more" href="#" data-id="${catId}">Подробнее</a><br>`);
+        if (!cat.find('.show-more').length)
+          cat.find('.online').before(`<a class="show-more" href="#" data-id="${catId}">Подробнее</a><br>`);
         else cat.find('.show-more').data('id', catId);
       }
 
@@ -1442,25 +1502,21 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           if (!newMouth.length) {
             mouth.after('<ol class="mouth new-mouth"></ol>');
             newMouth = mouth.siblings('.new-mouth');
-          }
-          else newMouth.show();
+          } else newMouth.show();
 
           let mouthThings = mouth.children('li');
           mouthThings.each(function () {
             const li = $(this);
             if (li.find('div').length) {
               cats.push(li.html());
-            }
-            else {
+            } else {
               let thingId = /\d+/.exec(li.children('img').attr('src'))[0];
 
               if (li.text() !== '') {
                 things[thingId] = Number(li.text().slice(1));
-              }
-              else if (things[thingId]) {
+              } else if (things[thingId]) {
                 things[thingId]++;
-              }
-              else things[thingId] = 1;
+              } else things[thingId] = 1;
             }
           });
 
@@ -1474,8 +1530,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
           });
           mouth.hide();
           newMouth.html(newMouthHtml);
-        }
-        else cat.find('.new-mouth').hide();
+        } else cat.find('.new-mouth').hide();
       }
     });
 
@@ -1487,20 +1542,25 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
     }
 
     if (getSettings(CONF_CW3_PARAMETERS_INFO)) {
-      $('#parameter').children('h2').first().append(' <a id="parameters-alert" href="#" title="Параметры подробно">+</a>');
+      $('#parameter')
+        .children('h2')
+        .first()
+        .append(' <a id="parameters-alert" href="#" title="Параметры подробно">+</a>');
       $('#parameters-alert').click(function () {
         let params = ['Сонливость', 'Голод', 'Жажда', 'Нужда', 'Здоровье', 'Чистота'];
         let text = '<center><b>Параметры</b></center>';
         ['dream', 'hunger', 'thirst', 'need', 'health', 'clean'].forEach(function (param, i) {
-          const isDream = (param === 'dream'),
-            isHunger = (param === 'hunger'),
-            isThirst = (param === 'thirst'),
-            isNeed = (param === 'need'),
-            isClean = (param === 'clean'),
-            isHealth = (param === 'health');
+          const isDream = param === 'dream',
+            isHunger = param === 'hunger',
+            isThirst = param === 'thirst',
+            isNeed = param === 'need',
+            isClean = param === 'clean',
+            isHealth = param === 'health';
           text += `<br><b>${params[i]}</b><br>`;
-          
-          const barFill = $('#' + param).find(".bar-fill").last();
+
+          const barFill = $('#' + param)
+            .find('.bar-fill')
+            .last();
           let red = parseInt(barFill[0].style.width);
 
           if (Number.isNaN(red)) text += 'Ошибка, попробуйте снова';
@@ -1509,39 +1569,32 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
             else if (isThirst && $('.dey[data-id="5"]').length) text += `<span>100 %</span><br>До 30 c питья`;
             else if (isNeed && $('.dey[data-id="4"]').length) text += `<span>100 %</span><br>10 c дел в грязном месте`;
             else text += '100 %';
-          }
-          else if (red === 0) {
+          } else if (red === 0) {
             text += '<span style="color: darkred">0 %</span>';
             if (isDream) text += `<br>${secToTime(100 * 20)} сна или более`;
             if (isThirst) text += `<br>${secToTime(100 * 60 - 30)} питья или более`;
             if (isNeed) text += `<br>${secToTime(100 * 30 - 10)} дел в грязном месте или более`;
-          }
-          else {
+          } else {
             let percent = 100 - red;
             if (isHealth || isNeed || isClean) {
-              percent = red
+              percent = red;
             }
             text += `<span style="color: darkred">${percent}%</span> (${red}px)`;
             if (isDream) {
               const maxTime = red * 20 + 10;
               text += `<br>До ${secToTime(maxTime)} сна`;
-            }
-            else if (isHunger) {
-              const time = Math.ceil((100 - percent) * 9 / 100) * 15;
+            } else if (isHunger) {
+              const time = Math.ceil(((100 - percent) * 9) / 100) * 15;
               text += `<br>${secToTime(time)} поглощения пищи`;
-            }
-            else if (isThirst) {
-              const time = Math.ceil((100 - percent) * 9 / 100) * 15;
+            } else if (isThirst) {
+              const time = Math.ceil(((100 - percent) * 9) / 100) * 15;
               text += `<br>До ${secToTime(time)} питья`;
-            }
-            else if (isNeed) {
+            } else if (isNeed) {
               const maxTime = (100 - red) * 30 + 10;
               text += `<br>До ${secToTime(maxTime)} дел в грязном месте`;
-            }
-            else if (isClean && red <= 25) {
-              text += `<br>Вылизываться ${secToTime((percent) * 100)}`;
-            }
-            else if (isHealth && red <= 50) {
+            } else if (isClean && red <= 25) {
+              text += `<br>Вылизываться ${secToTime(percent * 100)}`;
+            } else if (isHealth && red <= 50) {
               text += `<br>Не болейте...`;
             }
           }
@@ -1552,13 +1605,13 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
   }
 
   function snow() {
-    const id = Date.now()
-      , flake = 'https://cw-mod.github.io/cw-mod/resources/snow_' + Math.ceil(Math.random() * 3) + '.png'
-      , pos_x = Math.ceil(Math.random() * 98)
-      , end_x = pos_x + Math.floor(Math.random() * 31) - 15
-      , deg = Math.ceil(Math.random() * 358)
-      , width = Math.ceil(Math.random() * 45) + 5
-      , img = `
+    const id = Date.now(),
+      flake = 'https://cw-mod.github.io/cw-mod/resources/snow_' + Math.ceil(Math.random() * 3) + '.png',
+      pos_x = Math.ceil(Math.random() * 98),
+      end_x = pos_x + Math.floor(Math.random() * 31) - 15,
+      deg = Math.ceil(Math.random() * 358),
+      width = Math.ceil(Math.random() * 45) + 5,
+      img = `
 <img id="snow_${id}" style="
   left: ${pos_x}%;
   top: -10%;
@@ -1567,17 +1620,21 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
   z-index: 72000;
   transform: rotate(${deg}deg);
   max-width: ${width}px;
-" src="${flake}">`
-      , timefall = Math.ceil(Math.random() * 12000) + 5000;
+" src="${flake}">`,
+      timefall = Math.ceil(Math.random() * 12000) + 5000;
 
-    $("#snow").append(img);
+    $('#snow').append(img);
 
-    $(`#snow_${id}`).animate({
-      top: '120%',
-      left: end_x + '%'
-    }, timefall, function () {
-      $(`#snow_${id}`).empty().remove();
-    });
+    $(`#snow_${id}`).animate(
+      {
+        top: '120%',
+        left: end_x + '%',
+      },
+      timefall,
+      function () {
+        $(`#snow_${id}`).empty().remove();
+      }
+    );
   }
 
   function changeFaePage() {
@@ -1601,21 +1658,24 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
       $(isDesktop ? '#branch' : '#site_table').append(`<b>Список заметок</b><br>`);
       let html = '';
       const notes = JSON.parse(window.localStorage.getItem('cwmod_notes') || '{}');
-      Object.keys(notes).forEach(function(catId) {
-        html += `<tr><td>${catId}</td><td id="note-${catId}"></td><td>${notes[catId]}</td></tr>`;;
+      Object.keys(notes).forEach(function (catId) {
+        html += `<tr><td>${catId}</td><td id="note-${catId}"></td><td>${notes[catId]}</td></tr>`;
       });
       if (html.length) {
-        $(isDesktop ? '#branch' : '#site_table').append(`<table><thead><tr><td>ID</td><td>Имя</td><td>Заметка</td></tr></thead><tbody>${html}</tbody></table>`);
-        Object.keys(notes).forEach(catId => setCatName(catId, '#note-'+catId));
-      }
-      else {
+        $(isDesktop ? '#branch' : '#site_table').append(
+          `<table><thead><tr><td>ID</td><td>Имя</td><td>Заметка</td></tr></thead><tbody>${html}</tbody></table>`
+        );
+        Object.keys(notes).forEach((catId) => setCatName(catId, '#note-' + catId));
+      } else {
         $(isDesktop ? '#branch' : '#site_table').append(`<i>Нет заметок об игроках</i>`);
       }
     }
   }
 
   function changeIdeasPage() {
-    addCSS(`.vote[style="color:#000"] { color: inherit !important; } .idea { color: black; } .idea a, .idea a:hover { color: #005 !important; }`);
+    addCSS(
+      `.vote[style="color:#000"] { color: inherit !important; } .idea { color: black; } .idea a, .idea a:hover { color: #005 !important; }`
+    );
   }
 
   function changeIndexPage() {
@@ -1638,35 +1698,35 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
 
   function activityCalc(catId) {
     const actStages = [
-      { name: 'пустое место', fromZero: -5000 }
-      , { name: 'подлежащий удалению', fromZero: -5000 }
-      , { name: 'покинувший игру', fromZero: -2000 }
-      , { name: 'забывший про игру', fromZero: -1000 }
-      , { name: 'забытый кот', fromZero: -750 }
-      , { name: 'ужаснейшая', fromZero: -500 }
-      , { name: 'ужасная', fromZero: -300 }
-      , { name: 'ухудшающаяся', fromZero: -150 }
-      , { name: 'отрицательная', fromZero: -50 }
-      , { name: 'переходная', fromZero: -5 }
-      , { name: 'положительная', fromZero: 5 }
-      , { name: 'улучшающаяся', fromZero: 50 }
-      , { name: 'замечательная', fromZero: 150 }
-      , { name: 'переход 2 мин 15 с', fromZero: 225 }
-      , { name: 'замечательнейшая', fromZero: 300 }
-      , { name: 'переход 2 мин', fromZero: 450 }
-      , { name: 'любимый кот', fromZero: 500 }
-      , { name: 'переход 1 мин 45 с', fromZero: 675 }
-      , { name: 'легенда сайта', fromZero: 750 }
-      , { name: 'переход 1 мин 30 с', fromZero: 900 }
-      , { name: 'ходячий миф', fromZero: 1000 }
-      , { name: 'переход 1 мин 15 с', fromZero: 1125 }
-      , { name: 'переход 1 мин', fromZero: 1350 }
-      , { name: 'переход 45 c', fromZero: 1575 }
-      , { name: 'император Игровой', fromZero: 2000 }
-      , { name: 'частичка Игровой', fromZero: 5000 }
-      , { name: 'хранитель Игровой', fromZero: 20000 }
-      , { name: 'идеальная', fromZero: 75000 }
-      , { name: 'сверхидеальная', fromZero: 150000 }
+      { name: 'пустое место', fromZero: -5000 },
+      { name: 'подлежащий удалению', fromZero: -5000 },
+      { name: 'покинувший игру', fromZero: -2000 },
+      { name: 'забывший про игру', fromZero: -1000 },
+      { name: 'забытый кот', fromZero: -750 },
+      { name: 'ужаснейшая', fromZero: -500 },
+      { name: 'ужасная', fromZero: -300 },
+      { name: 'ухудшающаяся', fromZero: -150 },
+      { name: 'отрицательная', fromZero: -50 },
+      { name: 'переходная', fromZero: -5 },
+      { name: 'положительная', fromZero: 5 },
+      { name: 'улучшающаяся', fromZero: 50 },
+      { name: 'замечательная', fromZero: 150 },
+      { name: 'переход 2 мин 15 с', fromZero: 225 },
+      { name: 'замечательнейшая', fromZero: 300 },
+      { name: 'переход 2 мин', fromZero: 450 },
+      { name: 'любимый кот', fromZero: 500 },
+      { name: 'переход 1 мин 45 с', fromZero: 675 },
+      { name: 'легенда сайта', fromZero: 750 },
+      { name: 'переход 1 мин 30 с', fromZero: 900 },
+      { name: 'ходячий миф', fromZero: 1000 },
+      { name: 'переход 1 мин 15 с', fromZero: 1125 },
+      { name: 'переход 1 мин', fromZero: 1350 },
+      { name: 'переход 45 c', fromZero: 1575 },
+      { name: 'император Игровой', fromZero: 2000 },
+      { name: 'частичка Игровой', fromZero: 5000 },
+      { name: 'хранитель Игровой', fromZero: 20000 },
+      { name: 'идеальная', fromZero: 75000 },
+      { name: 'сверхидеальная', fromZero: 150000 },
     ];
 
     const sets = JSON.parse(window.localStorage.getItem('cwmod_act') || '{}');
@@ -1676,8 +1736,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
       if (window.localStorage.getItem('cwm_hours') !== null) {
         sets[catId].hours = Number(window.localStorage.getItem('cwm_hours'));
         window.localStorage.removeItem('cwm_hours');
-      }
-      else sets[catId].hours = 24;
+      } else sets[catId].hours = 24;
       sets[catId].opened = true;
     }
 
@@ -1738,7 +1797,7 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
       return {
         actions: actionsWithoutDecr + actionsDecr,
         time: secToTime(time),
-        date: date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear()
+        date: date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear(),
       };
     }
 
@@ -1762,8 +1821,8 @@ input, select { background-color: var(--input-bg) !important; color: var(--input
         progress.doneFromZero = stage.fromZero + Number(act[1].split('/')[0]);
       }
       if (
-        (!actStages[i + 1] || actStages[i + 1].fromZero > progress.doneFromZero)
-        && actStages[i].fromZero <= progress.doneFromZero
+        (!actStages[i + 1] || actStages[i + 1].fromZero > progress.doneFromZero) &&
+        actStages[i].fromZero <= progress.doneFromZero
       ) {
         progress.stage = i;
       }
@@ -1799,14 +1858,17 @@ value="${sets[catId].hours}" style="width: 60px"> <span id="hour-word"></span> �
 
     if (sets[catId].goal > progress.stage || sets[catId].noGrats) {
       $(`#act-list > [value="${sets[catId].goal}"]`).prop('selected', true);
-    }
-    else if (sets[catId].goal) {
-      $(`#cwmod-grats`).html(`
+    } else if (sets[catId].goal) {
+      $(`#cwmod-grats`)
+        .html(
+          `
 Цель <b>«${actStages[sets[catId].goal].name}»</b> достигнута!
 <center><img src="/img/stickers/systempaw3/6.png"></center>
 <input id="cwmod-grats-hooray" type="button" value="Скрыть">
 <br><input id="cwmod-grats-never-show" type="checkbox"> Больше не поздравлять на этом персонаже
-`).show();
+`
+        )
+        .show();
       $('#cwmod-grats-hooray').click(function () {
         $(`#cwmod-grats`).hide(200);
         $(`#cwmod-grats`).hide(200);
@@ -1825,14 +1887,9 @@ value="${sets[catId].hours}" style="width: 60px"> <span id="hour-word"></span> �
 
     if (actLength(progress.doneFromZero) !== 45) {
       $('#tofall').parent().hide();
-    }
-    else {
+    } else {
       const timeFall = new Date(Date.now() + (progress.doneFromZero - 1575) * 5 * 3600000);
-      $('#tofall').html(
-        timeFall.getDate() + ' '
-        + months[timeFall.getMonth()]
-        + ' ' + timeFall.getFullYear()
-      );
+      $('#tofall').html(timeFall.getDate() + ' ' + months[timeFall.getMonth()] + ' ' + timeFall.getFullYear());
     }
 
     $('#minus').change(function () {
@@ -1881,7 +1938,8 @@ label { cursor: pointer; }
     `);
     const enableSaving = getSettings(CONF_LS_ENABLE_SAVING);
 
-    if (enableSaving) $('#links').append(` | <a href="ls?3" id="f3">Сохранённые (<span id="saved-number">?</span>)</a>`);
+    if (enableSaving)
+      $('#links').append(` | <a href="ls?3" id="f3">Сохранённые (<span id="saved-number">?</span>)</a>`);
     $('#links').append(` | <a href="ls?search" id="s">Поиск</a>`);
 
     let html = `
@@ -1894,7 +1952,8 @@ label { cursor: pointer; }
       <label><input name="search-folder" type="radio" value="2"> непрочитанные</label>
     </p>
 `;
-    if (enableSaving) html += `
+    if (enableSaving)
+      html += `
     <p>
       <label><input name="search-type" id="search-all" type="checkbox"> во всех ЛС на этом персонаже</label>
       <label><input name="search-type" id="search-saved" type="checkbox"> в сохранённых ЛС</label>
@@ -1925,7 +1984,7 @@ label { cursor: pointer; }
       if (isPage('ls?3')) showSavedLsList();
       if (isPage(/^https:\/\/catwar\.(su|net)\/ls\?id=\d+/)) changeMessagePage();
 
-      body.on('click', '.del-saved', function(){
+      body.on('click', '.del-saved', function () {
         const lsId = $(this).data('id');
         const subject = $(this).parent().siblings().first().text();
         const catName = $(this).parent().siblings('.cat_name').text();
@@ -1945,14 +2004,12 @@ label { cursor: pointer; }
         e.preventDefault();
         history.pushState(null, null, `${baseUrl}/ls?3`);
         showSavedLsList();
-      }
-      else if ($(this).attr('id') === 's') {
+      } else if ($(this).attr('id') === 's') {
         if (e.ctrlKey) return;
         e.preventDefault();
         history.pushState(null, null, `${baseUrl}/ls?search`);
         showSearch();
-      }
-      else {
+      } else {
         hideSavedLsList();
         hideSearch();
       }
@@ -1963,12 +2020,10 @@ label { cursor: pointer; }
         if (enableSaving && isPage('ls?3')) {
           history.pushState(null, null, `${baseUrl}/ls?3`);
           showSavedLsList();
-        }
-        else if (isPage('ls?search')) {
+        } else if (isPage('ls?search')) {
           history.pushState(null, null, `${baseUrl}/ls?search`);
           showSearch();
-        }
-        else {
+        } else {
           if (enableSaving) hideSavedLsList();
           hideSearch();
         }
@@ -1978,7 +2033,7 @@ label { cursor: pointer; }
     });
     observer.observe($('#main')[0], { childList: true });
 
-    body.on('click', '#preview', function(){
+    body.on('click', '#preview', function () {
       if (isDesktop) {
         $('#preview_div').after(`
 <table border="1" style="width: 90%; max-width: 500px;">
@@ -2015,7 +2070,7 @@ label { cursor: pointer; }
       let subject = $('#subject').val().replaceAll('<', '&lt;');
       if (!subject) subject = '( = )';
       $('#preview-subject').html(subject);
-      getCurrentUser(function(catId, catName) {
+      getCurrentUser(function (catId, catName) {
         $('#preview-sender').html(`<a href="cat${catId}">${catName}</a>`);
       });
       const currentDate = new Date();
@@ -2114,7 +2169,7 @@ label { cursor: pointer; }
     const lsId = parseInt(window.location.href.split('=')[1], 10);
     const savedLs = getSavedLsById(lsId);
     const btnDelete = `<input id="delete-saved-ls" type="button" value="Удалить" style="float: right">`;
-    
+
     const isLsOnSever = !(main.html() === 'ЛС не найдено.');
 
     if ($('#msg_subject').length && lsId) {
@@ -2128,8 +2183,7 @@ label { cursor: pointer; }
         const td = $('#msg_table > tbody > tr:last-child > td');
         td.html(td.html() + `<i id="savedate">Сохранено ${savedLs.savedate}</i> ${btnDelete}`);
       }
-    }
-    else if (!isLsOnSever && savedLs) {
+    } else if (!isLsOnSever && savedLs) {
       insertSavedLs(main, lsId, savedLs, btnDelete);
     }
 
@@ -2138,13 +2192,12 @@ label { cursor: pointer; }
         deleteSavedLs(lsId);
         $('#savedate').remove();
         $('#delete-saved-ls').remove();
-      }
-      else if (confirm('Удалить это ЛС из сохранённых?')) {
+      } else if (confirm('Удалить это ЛС из сохранённых?')) {
         deleteSavedLs(lsId);
         main.html('ЛС не найдено.');
       }
     });
-    
+
     if ($('#msg_login').length) {
       let myId;
       if (savedLs) myId = Number(savedLs.myId);
@@ -2159,7 +2212,7 @@ label { cursor: pointer; }
       }
       $('#msg_info > .msg_open').each(function () {
         const id = $(this).data('id');
-        const isMy = ($(this).text() === '-');
+        const isMy = $(this).text() === '-';
         history[myId][catId][id] = isMy;
       });
       saveData('ls_history', history);
@@ -2178,7 +2231,9 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 <tbody>
   <tr><td colspan="2">${escapeHTML(ls.subject)}</td></tr>
   <tr><td id="msg_info" valign="top">${info}</td><td>${ls.text}</td></tr>
-  <tr><td colspan="2"><i>${ls.type ? 'Отправитель' : 'Получатель'}: ${ls.myName} [${ls.myId}]<br>Сохранено ${ls.savedate} ${btnDelete}</i></td></tr>
+  <tr><td colspan="2"><i>${ls.type ? 'Отправитель' : 'Получатель'}: ${ls.myName} [${ls.myId}]<br>Сохранено ${
+        ls.savedate
+      } ${btnDelete}</i></td></tr>
 </tbody>
 </table>
 `);
@@ -2189,7 +2244,9 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   <tr><td>${escapeHTML(ls.subject)}</td></tr>
   <tr><td id="msg_info" valign="top">${info}</td></tr>
   <tr><td>${ls.text}</td></tr>
-  <tr><td><i>${ls.type ? 'Отправитель' : 'Получатель'}: ${ls.myName} [${ls.myId}]<br>Сохранено ${ls.savedate} ${btnDelete}</i></td></tr>
+  <tr><td><i>${ls.type ? 'Отправитель' : 'Получатель'}: ${ls.myName} [${ls.myId}]<br>Сохранено ${
+        ls.savedate
+      } ${btnDelete}</i></td></tr>
 </tbody>
 </table>
 `);
@@ -2204,29 +2261,33 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     });
     Object.keys(history).forEach(function (key) {
       const isMy = history[key];
-      $.post('/ajax/mess_show', {
-        id: key
-      }, function (data) {
-        const isSaved = getSavedLsById(key);
-        if (isSaved || !data.fail) {
-          let lsLink = `<a href="ls?id=${key}" class="msg_open" data-id="${key}">`
-          if (Number(key) === lsId) lsLink += `<big><b>`
-          lsLink += isMy ? '-' : '+';
-          if (Number(key) === lsId) lsLink += `</b></big>`
-          if (Number(key) === lsId) lsLink += `</b></big>`
-          lsLink += `</a>`
-          historyArray[key] = lsLink;
-        }
-        else {
-          historyArray[key] = `<span class="msg_deleted">${isMy ? '-' : '+'}</span>`;
-        }
-        if (Object.keys(historyArray).length === Object.keys(history).length) {
-          $('#msg-history').empty();
-          Object.keys(historyArray).forEach(function (k) {
-            $('#msg-history').prepend(historyArray[k] + ' ');
-          });
-        }
-      }, 'json');
+      $.post(
+        '/ajax/mess_show',
+        {
+          id: key,
+        },
+        function (data) {
+          const isSaved = getSavedLsById(key);
+          if (isSaved || !data.fail) {
+            let lsLink = `<a href="ls?id=${key}" class="msg_open" data-id="${key}">`;
+            if (Number(key) === lsId) lsLink += `<big><b>`;
+            lsLink += isMy ? '-' : '+';
+            if (Number(key) === lsId) lsLink += `</b></big>`;
+            if (Number(key) === lsId) lsLink += `</b></big>`;
+            lsLink += `</a>`;
+            historyArray[key] = lsLink;
+          } else {
+            historyArray[key] = `<span class="msg_deleted">${isMy ? '-' : '+'}</span>`;
+          }
+          if (Object.keys(historyArray).length === Object.keys(history).length) {
+            $('#msg-history').empty();
+            Object.keys(historyArray).forEach(function (k) {
+              $('#msg-history').prepend(historyArray[k] + ' ');
+            });
+          }
+        },
+        'json'
+      );
     });
   }
 
@@ -2237,8 +2298,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 
     if (!searchAll && searchSaved && folder === 2) {
       $('#search-list').html('<img src="/img/stickers/systempaw2/6.png">');
-    }
-    else {
+    } else {
       $('#search-list').html(`
 <h2>Результаты поиска</h2>
 <p>Найдено: <span id="search-number">0</span></p>
@@ -2263,44 +2323,64 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 
   function searchAllLs(type, cat, text) {
     getCatIdByName(cat, function (catId) {
-      $.post('/ajax/mess_folder', {
-        folder: type,
-        page: 1,
-        del: 0
-      }, function (data) {
-        const column = (type ? 'poluch' : 'otpr');
-        for (let i = 1; i <= data.page; i++) {
-          $.post('/ajax/mess_folder', {
-            folder: type,
-            page: i,
-            del: 0
-          }, function (data) {
-            for (let j = 0; j < data.msg.length; j++) {
-              const msg = data.msg[j];
-              const id = msg.id;
-              const html = `
+      $.post(
+        '/ajax/mess_folder',
+        {
+          folder: type,
+          page: 1,
+          del: 0,
+        },
+        function (data) {
+          const column = type ? 'poluch' : 'otpr';
+          for (let i = 1; i <= data.page; i++) {
+            $.post(
+              '/ajax/mess_folder',
+              {
+                folder: type,
+                page: i,
+                del: 0,
+              },
+              function (data) {
+                for (let j = 0; j < data.msg.length; j++) {
+                  const msg = data.msg[j];
+                  const id = msg.id;
+                  const html = `
 <tr class="${msg.new ? 'msg_read' : 'msg_notRead'}">
   <td><a href="ls?id=${msg.id}" class="msg_open" data-id="${msg.id}">${msg.subject}</a></td>
   <td><a href="cat${msg[column]}">${msg.login}</a></td>
   <td>${msg.time}</td>
 </tr>
 `;
-              $.post('/ajax/mess_show', {
-                id: id
-              }, function (data) {
-                if (cat) {
-                  if (catId !== msg[column] && cat !== msg[column] && cat.toLowerCase() !== msg.login.toLowerCase()) return;
+                  $.post(
+                    '/ajax/mess_show',
+                    {
+                      id: id,
+                    },
+                    function (data) {
+                      if (cat) {
+                        if (
+                          catId !== msg[column] &&
+                          cat !== msg[column] &&
+                          cat.toLowerCase() !== msg.login.toLowerCase()
+                        )
+                          return;
+                      }
+                      if (text) {
+                        if (!data.msg.subject.match(text) && !data.msg.text.replace(/<[^>]+>/g, '').match(text)) return;
+                      }
+                      $('#search-results').append(html);
+                      $('#search-number').html($('#search-results').children().length - 1);
+                    },
+                    'json'
+                  );
                 }
-                if (text) {
-                  if (!data.msg.subject.match(text) && !data.msg.text.replace(/<[^>]+>/g, '').match(text)) return;
-                }
-                $('#search-results').append(html);
-                $('#search-number').html($('#search-results').children().length - 1);
-              }, 'json');
-            }
-          }, 'json');
-        }
-      }, 'json');
+              },
+              'json'
+            );
+          }
+        },
+        'json'
+      );
     });
   }
 
@@ -2312,42 +2392,39 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
           const ls = savedLs[key];
           if (ls.type !== type) continue;
           if (cat) {
-            if (
-              catId !== ls.catId
-              && cat !== ls.catId
-              && cat.toLowerCase() !== ls.catName.toLowerCase()
-            ) {
+            if (catId !== ls.catId && cat !== ls.catId && cat.toLowerCase() !== ls.catName.toLowerCase()) {
               continue;
             }
           }
           if (text) {
-            if (
-              !ls.subject.match(text)
-              && !ls.text.replace(/<[^>]+>/g, '').match(text)
-            ) {
+            if (!ls.subject.match(text) && !ls.text.replace(/<[^>]+>/g, '').match(text)) {
               continue;
             }
           }
-          $.post('/ajax/mess_show', {
-            id: key
-          }, function (data) {
-            if (data.fail) {
-              const html = `
+          $.post(
+            '/ajax/mess_show',
+            {
+              id: key,
+            },
+            function (data) {
+              if (data.fail) {
+                const html = `
 <tr class="msg_read">
   <td><a href="ls?id=${key}" class="msg_open" data-id="${key}">${escapeHTML(ls.subject)}</a></td>
   <td class="search-cat-name" data-id="${key}">${ls.catName}</td>
   <td>${ls.savedate}</td>
 </tr>
 `;
-              $('#search-results').append(html);
-              $('#search-number').html($('#search-results').children().length - 1);
-              setCatName(ls.catId, `.search-cat-name[data-id="${key}"]`, ls.catName);
-            }
-          }, 'json');
+                $('#search-results').append(html);
+                $('#search-number').html($('#search-results').children().length - 1);
+                setCatName(ls.catId, `.search-cat-name[data-id="${key}"]`, ls.catName);
+              }
+            },
+            'json'
+          );
         }
       });
-    }
-    else {
+    } else {
       $('#search-results').html('Нет сохранённых сообщений');
     }
   }
@@ -2426,7 +2503,9 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
       if ($('#savedate').length) $('#savedate').text(`Сохранено ${ls.savedate}`);
       else {
         const td = $('#msg_table > tbody > tr:last-child > td');
-        td.append(`<i id="savedate">Сохранено ${ls.savedate}</i> <input id="delete-saved-ls" type="button" value="Удалить" data-id="${lsId}" style="float: right">`);
+        td.append(
+          `<i id="savedate">Сохранено ${ls.savedate}</i> <input id="delete-saved-ls" type="button" value="Удалить" data-id="${lsId}" style="float: right">`
+        );
         $('#saved-number').text(Number($('#saved-number').text()) + 1);
       }
 
@@ -2575,7 +2654,9 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     <li>Добавить пункты:
       <ul>
         <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_ABOUT}"> Об игре</li>
-        <!--<li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_INDEX}"> ${$('.kn1').length ? 'Мой кот' : 'Моя кошка'}</li>-->
+        <!--<li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_INDEX}"> ${
+      $('.kn1').length ? 'Мой кот' : 'Моя кошка'
+    }</li>-->
         <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_TOP}"> СИ (список игроков)</li>
         <!--<li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_CHAT}"> Чат</li>-->
         <!--<li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_MENU_LS}"> ЛС</li>-->
@@ -2598,7 +2679,9 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
       </select>
       <br><small>Тем больше нет =( если надо сделаю </small>
     </li>
-    <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_COMPACT}"> Компактная игровая ${(($(window).width() < 1500 || $(window).height() < 700) ? ' (не рекомендуется)' : '')}
+    <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_COMPACT}"> Компактная игровая ${
+      $(window).width() < 1500 || $(window).height() < 700 ? ' (не рекомендуется)' : ''
+    }
       <ul data-show="${CONF_CW3_COMPACT}">
         <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_COMPACT_SWAP_SIDES}"> Поменять местами блоки (погода, действия, «во рту», чат справа)</li>
         <li><input class="cwmod-settings" type="checkbox" data-conf="${CONF_CW3_COMPACT_CHAT_ON_TOP}"> Чат наверху</li>
@@ -2728,7 +2811,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     try {
       $('.cwmod-data-export').each(function () {
         const key = $(this).data('export');
-        $(this).val(window.localStorage.getItem('cwmod_' + key))
+        $(this).val(window.localStorage.getItem('cwmod_' + key));
       });
 
       $(window).on('storage', function (e) {
@@ -2767,8 +2850,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     $(`[data-conf="${CONF_SETTINGS_HIDE_EMAIL}"]`).change(function () {
       if ($(this).is(':checked')) {
         addCSS(`input[name="mail"]:not(:focus) { color: #333; }`, CONF_SETTINGS_HIDE_EMAIL);
-      }
-      else removeCSS(CONF_SETTINGS_HIDE_EMAIL);
+      } else removeCSS(CONF_SETTINGS_HIDE_EMAIL);
     });
 
     $('#clear-ym-storage').click(function () {
@@ -2778,10 +2860,11 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
         const ymSize = window.localStorage.getItem('_ym_alt_retryReqs').length;
         if (ymSize) {
           window.localStorage.removeItem('_ym_alt_retryReqs');
-          $('#clear-ym-storage-result').html(`<p>Возможно, чистка ${ymSize} байт данных Яндекс.Метрики могла помочь.</p>`);
+          $('#clear-ym-storage-result').html(
+            `<p>Возможно, чистка ${ymSize} байт данных Яндекс.Метрики могла помочь.</p>`
+          );
         }
-      }
-      catch (err) {}
+      } catch (err) {}
     });
   }
 
@@ -2833,14 +2916,12 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
           if (exp[key].catName === imp[key].catName && exp[key].savedate > imp[key].savedate) {
             merged[key] = exp[key];
           }
-        }
-        else if (dataKey === 'notes') {
+        } else if (dataKey === 'notes') {
           if (exp[key] === imp[key]) return;
           else if (exp[key].indexOf(imp[key]) !== -1) {
             merged[key] = exp[key];
             text.push(`Заметки об игроке с ID ${key}: "${exp[key]}" и "${imp[key]}" — объединены`);
-          }
-          else if (imp[key].indexOf(exp[key]) === -1) {
+          } else if (imp[key].indexOf(exp[key]) === -1) {
             merged[key] = exp[key] + '\n' + imp[key];
             text.push(`Заметки об игроке с ID ${key}: "${exp[key]}" и "${imp[key]}" — объединены в "${merged[key]}"`);
           }
@@ -2854,7 +2935,8 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   }
 
   function mergeDataValidate(dataKey, data) {
-    let error = false, text = [];
+    let error = false,
+      text = [];
     Object.keys(data).forEach(function (k) {
       if (dataKey === 'notes') {
         if (!/^\d+$/.test(k)) {
@@ -2865,8 +2947,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
           error = true;
           text.push(`Элемент _${k}_ не заметка`);
         }
-      }
-      else if (dataKey === 'ls') {
+      } else if (dataKey === 'ls') {
         if (!/^\d+$/.test(k)) {
           error = true;
           text.push(`Ключ _${k}_ не ID сообщения`);
@@ -2874,15 +2955,13 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
         if (typeof data[k] !== 'object') {
           error = true;
           text.push(`Элемент _${k}_ не сообщение`);
-        }
-        else {
+        } else {
           const lsKeys = ['subject', 'text', 'type', 'savedate', 'catId', 'catName', 'date', 'myId', 'myName'];
           const thisKeys = Object.keys(data[k]);
           if (thisKeys.length !== lsKeys.length) {
             error = true;
             text.push(`Элемент ${k} не сообщение`);
-          }
-          else {
+          } else {
             let keysError = false;
             lsKeys.forEach(function (key) {
               if (thisKeys.indexOf(key) === -1) {
@@ -2897,14 +2976,14 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
         }
       }
     });
-    return { error: error, text: text }
+    return { error: error, text: text };
   }
 
   function mergeDataError(dataKey, type, text = []) {
     let errorText = 'Ошибка: ';
     const errors = {
-      'export': 'неправильный формат исходных данных (в порядке всё с ними было, зачем трогать???)'
-      , 'import': 'неправильный формат входных данных'
+      export: 'неправильный формат исходных данных (в порядке всё с ними было, зачем трогать???)',
+      import: 'неправильный формат входных данных',
     };
     errorText += errors[type] || 'Неизвестная ошибка';
     $(`[data-result="${dataKey}"]`).append(`<p class="cwmod-error">${errorText}</p>${text.join('<br>')}`);
@@ -2931,8 +3010,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
           if (invert !== (cond === val)) $(this).show();
           else $(this).hide();
         });
-      }
-      else {
+      } else {
         const type = input.attr('type');
         switch (type) {
           case 'text':
@@ -2957,8 +3035,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     const style = $('#' + styleId);
     if (style.length) {
       style.append(css);
-    }
-    else {
+    } else {
       $('head').append(`<style id="${styleId}">${css}</style>`);
     }
   }
@@ -3051,7 +3128,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   }
 
   function decodeHTML(str) {
-    const doc = new DOMParser().parseFromString(str, "text/html");
+    const doc = new DOMParser().parseFromString(str, 'text/html');
     return doc.documentElement.textContent;
   }
 
@@ -3080,8 +3157,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 <button class="bbcode" title="Ненумерованный список" data-code="ul">ul</button>
 <button class="bbcode" title="Элемент списка" data-code="li">li</button>
 `);
-    }
-    else {
+    } else {
       $('[data-code="block"]').after(`
 <button class="bbcode" title="Раскрывающийся блок" data-code="overblock" data-parameter="1" data-text="Введите название раскрывающегося блока (то же, что и у заголовка, который раскрывает этот блок):">overblock</button>
 `);
@@ -3099,17 +3175,15 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   }
 
   function setAvatar(catId, selector) {
-    $.get('/cat' + catId.toString(),
-      function (data) {
-        const temp = $('<div/>', { html: data });
-        let avatar = temp.find('[src*=avatar]').attr('src');
-        if (!avatar) avatar = `${avatarDomain}/avatar/0.jpg`;
-        try {
-          window.sessionStorage.setItem('avatar' + catId, avatar);
-        } catch (err) { }
-        $(selector).css('background-image', `url(${avatar})`);
-      }
-    );
+    $.get('/cat' + catId.toString(), function (data) {
+      const temp = $('<div/>', { html: data });
+      let avatar = temp.find('[src*=avatar]').attr('src');
+      if (!avatar) avatar = `${avatarDomain}/avatar/0.jpg`;
+      try {
+        window.sessionStorage.setItem('avatar' + catId, avatar);
+      } catch (err) {}
+      $(selector).css('background-image', `url(${avatar})`);
+    });
   }
 
   function setCatName(catId, selector, oldName) {
@@ -3130,14 +3204,12 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
   }
 
   function getCurrentUser(callback) {
-    $.get('/',
-      function (data) {
-        const temp = $('<div/>', { html: data });
-        const catId = temp.find('a[href^="cat"]').first().text();
-        const catName = temp.find('big').first().text();
-        callback(catId, catName)
-      }
-    );
+    $.get('/', function (data) {
+      const temp = $('<div/>', { html: data });
+      const catId = temp.find('a[href^="cat"]').first().text();
+      const catName = temp.find('big').first().text();
+      callback(catId, catName);
+    });
   }
 
   function dateToString(date) {
@@ -3164,14 +3236,16 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     let valUnit = allUnits.indexOf(units[0]);
     const resultUnit = allUnits.indexOf(units[1]);
     const multipliers = [1000, 60, 60, 24];
-    if (valUnit > resultUnit) while (valUnit !== resultUnit) {
-      val *= multipliers[valUnit - 1];
-      valUnit--;
-    }
-    else while (valUnit !== resultUnit) {
-      val /= multipliers[valUnit];
-      valUnit++;
-    }
+    if (valUnit > resultUnit)
+      while (valUnit !== resultUnit) {
+        val *= multipliers[valUnit - 1];
+        valUnit--;
+      }
+    else
+      while (valUnit !== resultUnit) {
+        val /= multipliers[valUnit];
+        valUnit++;
+      }
     return val;
   }
 
@@ -3181,7 +3255,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
 
   function catTimeToMs(y, m, d, h, min, s) {
     // отсчёт месяцев с 0, дней с 1
-    const result = (((((((y * 12 + m) * 28 + --d) * 24 + h) * 60) + min) * 60) + s) * 1000 / 7;
+    const result = ((((((y * 12 + m) * 28 + --d) * 24 + h) * 60 + min) * 60 + s) * 1000) / 7;
     return Math.round(result);
   }
 
@@ -3189,7 +3263,7 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     const secInYear = 12 * 28 * 24 * 60 * 60;
     const secInMonth = 28 * 24 * 60 * 60;
     const ms = timestamp - catTimeStart;
-    let time = Math.round(ms / 1000 * 7);
+    let time = Math.round((ms / 1000) * 7);
     const year = Math.floor(time / secInYear);
     time -= year * secInYear;
     const month = Math.floor(time / secInMonth);
@@ -3203,12 +3277,12 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     const second = time;
 
     return {
-      year: year
-      , month: month
-      , day: day + 1
-      , hour: hour
-      , minute: minute
-      , second: second
+      year: year,
+      month: month,
+      day: day + 1,
+      hour: hour,
+      minute: minute,
+      second: second,
     };
   }
 
@@ -3226,14 +3300,23 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     html = html.replace(/<(\/?)table>/gm, '[$1table=0]');
     html = html.replace(/<(\/?)table border="1">/gm, '[$1table]');
     html = html.replace(/<(\/?)tr>/gm, '[$1tr]');
-    html = html.replace(/<td align="center" valign="top" style="height:25px">(.(?![/b]<\/td>)+)<\/td>/gm, '[td][center]$1[/center][/td]');
+    html = html.replace(
+      /<td align="center" valign="top" style="height:25px">(.(?![/b]<\/td>)+)<\/td>/gm,
+      '[td][center]$1[/center][/td]'
+    );
     html = html.replace(/<(\/?)td>/gm, '[$1td]');
     html = html.replace(/[td][i]Цитата:[/i](.(?![/td])+)[/td]/gm, '[td][size=10][i]Цитата:[/i]$1[/size][/td]');
     html = html.replace(/<a href="([^"]+)"( target="_blank")?>/gm, '[url=$1]');
     html = html.replace(/<\/a>/gm, '[/url]');
     html = html.replace(/<img src="([^"]+)"( alt="([^"]+)")?( style="max-width: 4000px;")?>/gm, '[img]$1[/img]');
-    html = html.replace(/<iframe width="640" height="390" src="https:\/\/www\.youtube\.com\/embed\/([^"]+)" frameborder="0" allowfullscreen=""><\/iframe>/gm, '[header=$1]Видеозапись[/header][br][block=$1][video]$1[/video][/block]');
-    html = html.replace(/<audio controls=""><source src="([^"]+)" type="audio\/mpeg"> Воспроизведение аудиофайлов не поддерживается вашим браузером.<\/audio>/gm, '[header=$1]Аудиозапись[/header][br][block=$1][audio]$1[/audio][/block]');
+    html = html.replace(
+      /<iframe width="640" height="390" src="https:\/\/www\.youtube\.com\/embed\/([^"]+)" frameborder="0" allowfullscreen=""><\/iframe>/gm,
+      '[header=$1]Видеозапись[/header][br][block=$1][video]$1[/video][/block]'
+    );
+    html = html.replace(
+      /<audio controls=""><source src="([^"]+)" type="audio\/mpeg"> Воспроизведение аудиофайлов не поддерживается вашим браузером.<\/audio>/gm,
+      '[header=$1]Аудиозапись[/header][br][block=$1][audio]$1[/audio][/block]'
+    );
     html = html.replace(/<(\/?)li>/gm, '[$1li]');
     html = html.replace(/<(\/?)ol( style="display:inline-block")?>/gm, '[$1ol]');
     html = html.replace(/<(\/?)ul( style="display:inline-block")?>/gm, '[$1ul]');
@@ -3241,5 +3324,4 @@ ${ls.type ? 'Получатель' : 'Отправитель'}: <span id="msg_lo
     html = decodeHTML(html);
     return html;
   }
-
 })(window, document, jQuery);
