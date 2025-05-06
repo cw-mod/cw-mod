@@ -2,6 +2,8 @@
 
 **[Установить мод](https://cw-mod.github.io/cw-mod/cwm.user.js)**
 
+**[Установить фикс CW Shed](https://github.com/cw-mod/cw-shed-fixed/raw/refs/heads/main/cwshed/CW_Shed.user.js)**
+
 Оживляю Варомод 
 
 Для пожеланий/задачек нужно в разделе [Issues](https://github.com/cw-mod/cw-mod/issues) создать задачку и описать хотелки
