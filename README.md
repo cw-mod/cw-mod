@@ -1,6 +1,6 @@
 # Варомод resurrection 🌠
 
-**[Установить мод](https://cw-mod.github.io/cw-mod/cwm.user.js)**
+**[Установить Варомод](https://cw-mod.github.io/cw-mod/cwm.user.js)**
 
 **[Установить фикс CW Shed](https://github.com/cw-mod/cw-shed-fixed/raw/refs/heads/main/cwshed/CW_Shed.user.js)**
 
