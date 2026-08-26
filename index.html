@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Варомод resurrection</title>
+  <meta name="description" content="Оживляю старый Варомод, чиню CW Shed. Ставится через Tampermonkey.">
+  <link rel="canonical" href="https://cw-mod.github.io/cw-mod/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%231a1f1c'/%3E%3Crect x='6' y='6' width='20' height='20' rx='2' fill='none' stroke='%238fbf6a' stroke-width='2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=IBM+Plex+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #1a1f1c;
+      --bg-deep: #151a17;
+      --panel: #222824;
+      --panel-in: #1a1f1c;
+      --line: #4a6350;
+      --moss: #8fbf6a;
+      --moss-dim: #6f8f78;
+      --moss-dark: #3d6b4f;
+      --cream: #e8ede6;
+      --mute: #9aad9a;
+      --ink: #121612;
+      --max: 52rem;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--cream);
+      font-family: Manrope, "Segoe UI", Arial, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.65;
+      background:
+        radial-gradient(900px 480px at 50% -10%, rgba(143, 191, 106, 0.1), transparent 55%),
+        linear-gradient(180deg, #1f2621 0%, var(--bg) 40%, var(--bg-deep) 100%);
+      overflow-x: hidden;
+    }
+
+    a { color: var(--moss); }
+    a:hover { color: #b4d98f; }
+    a:focus-visible,
+    .btn:focus-visible {
+      outline: 2px solid var(--moss);
+      outline-offset: 3px;
+    }
+
+    .skip {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 20;
+      padding: 0.55rem 0.9rem;
+      background: var(--moss);
+      color: var(--ink);
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    .skip:focus { top: 1rem; }
+
+    .wrap {
+      width: min(100% - 2rem, var(--max));
+      margin-inline: auto;
+    }
+
+    .hero {
+      padding: 4.5rem 0 2rem;
+      text-align: center;
+    }
+
+    .etch {
+      margin: 0 0 1.1rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      color: var(--moss-dim);
+    }
+
+    h1 {
+      margin: 0;
+      font-family: "Cormorant Garamond", "Times New Roman", serif;
+      font-size: clamp(3rem, 9vw, 5.6rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+    }
+
+    h1 em {
+      display: block;
+      margin-top: 0.15rem;
+      font-style: italic;
+      font-weight: 500;
+      font-size: 0.42em;
+      color: var(--moss);
+      letter-spacing: 0;
+    }
+
+    .pitch {
+      margin: 1.25rem auto 1.75rem;
+      max-width: 36rem;
+      color: #b7c4b5;
+      font-size: clamp(1.02rem, 2vw, 1.15rem);
+    }
+
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3.1rem;
+      padding: 0.75rem 1.25rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary {
+      color: var(--ink);
+      background: var(--moss);
+      border: 2px solid var(--moss);
+    }
+    .btn-primary:hover {
+      color: var(--ink);
+      background: #a4cf7e;
+      border-color: #a4cf7e;
+      transform: translateY(-1px);
+    }
+
+    .btn-ghost {
+      color: #c6dcc0;
+      background: transparent;
+      border: 2px solid var(--moss);
+    }
+    .btn-ghost:hover {
+      color: var(--cream);
+      background: rgba(143, 191, 106, 0.1);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.6rem;
+      height: 2.5rem;
+      margin: 0.5rem 0 0.25rem;
+      background: var(--bg-deep);
+    }
+
+    .divider span {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--moss-dark);
+    }
+    .divider span:nth-child(2) { background: var(--moss-dim); width: 0.35rem; height: 0.35rem; }
+    .divider span:nth-child(3) { background: var(--moss); width: 0.5rem; height: 0.5rem; }
+    .divider span:nth-child(4) { background: var(--moss-dark); }
+    .divider span:nth-child(5) { background: var(--moss-dim); width: 0.35rem; height: 0.35rem; }
+
+    main { padding: 1.5rem 0 3.5rem; }
+
+    section {
+      margin-top: 1.15rem;
+      padding: 1.45rem 1.35rem 1.5rem;
+      background: var(--panel);
+      border: 2px solid var(--line);
+      border-radius: 6px;
+    }
+
+    h2 {
+      margin: 0 0 0.7rem;
+      font-family: "Cormorant Garamond", "Times New Roman", serif;
+      font-size: clamp(1.65rem, 3.2vw, 2.15rem);
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    p { margin: 0 0 0.85rem; color: var(--mute); }
+    p:last-child { margin-bottom: 0; }
+
+    .note {
+      margin: 0 0 1rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.86rem;
+      color: var(--moss-dim);
+    }
+
+    .steps {
+      display: grid;
+      gap: 0.7rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: step;
+    }
+
+    .steps li {
+      padding: 0.85rem 1rem;
+      background: var(--panel-in);
+      border: 1px solid rgba(61, 107, 79, 0.55);
+      border-radius: 4px;
+      color: #c8d5c4;
+    }
+
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step, decimal-leading-zero);
+      display: inline-block;
+      margin-right: 0.65rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 700;
+      color: var(--moss);
+    }
+
+    .steps strong { color: var(--cream); font-weight: 600; }
+
+    .tips {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .tips li {
+      padding: 0.9rem 1rem;
+      background: var(--panel-in);
+      border: 1px solid var(--moss);
+      border-radius: 4px;
+      color: #c8d5c4;
+    }
+
+    .tips b {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.9rem;
+      color: var(--moss);
+    }
+
+    code {
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-size: 0.86em;
+      padding: 0.08em 0.35em;
+      border-radius: 3px;
+      color: var(--moss);
+      background: rgba(0, 0, 0, 0.28);
+      word-break: break-all;
+    }
+
+    footer {
+      padding: 0 0 2.5rem;
+      text-align: center;
+      color: var(--mute);
+      font-size: 0.95rem;
+    }
+
+    footer .contact {
+      margin-bottom: 0.55rem;
+      font-family: "IBM Plex Mono", ui-monospace, monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    footer .tiny {
+      max-width: 36rem;
+      margin: 1rem auto 0;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #556355;
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding-top: 3.2rem; }
+      .cta { flex-direction: column; align-items: stretch; }
+      .btn { width: 100%; }
+      section { padding: 1.2rem 1rem 1.25rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .btn { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#install">К установке</a>
+
+  <header class="hero">
+    <div class="wrap">
+      <p class="etch">\ CARVED NOTICE /</p>
+      <h1>Варомод <em>resurrection</em></h1>
+      <p class="pitch">
+        Оживляю старый Варомод, чиню CW Shed. Кнопочки ниже для скачивания Варомода и Shed&#8209;а.
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="cwm.user.js">Установить Варомод</a>
+        <a class="btn btn-ghost" href="https://github.com/cw-mod/cw-shed-fixed/raw/refs/heads/main/cwshed/CW_Shed.user.js">Установить фикс CW Shed</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="divider" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <main class="wrap">
+    <section id="install">
+      <h2>Установка</h2>
+      <p class="note">Нужен обычный браузер (Chrome, Яндекс, Edge…)</p>
+      <ol class="steps">
+        <li>
+          Поставь расширение
+          <a href="https://www.tampermonkey.net/" target="_blank" rel="noopener"><strong>Tampermonkey</strong></a>
+          — открой сайт по ссылке и нажми кнопку для своего браузера.
+        </li>
+        <li>
+          Вернись сюда и нажми
+          <a href="cwm.user.js"><strong>Установить Варомод</strong></a>.
+          Откроется окно Tampermonkey — там нажми «Установить».
+        </li>
+        <li>
+          Готово. Зайди в вар и открой настройки: там должны появиться пункты мода.
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Скрипт стоит, но ничего не происходит</h2>
+      <p>
+        Иногда браузер блокирует скрипты. Это не баг мода — нужно один раз разрешить их для Tampermonkey.
+      </p>
+      <ul class="tips">
+        <li>
+          <b>&gt; Chrome / Яндекс / Edge (новые)</b>
+          Нажми правой кнопкой по иконке Tampermonkey → «Управление расширением» →
+          включи переключатель «Разрешить пользовательские скрипты»
+          (может называться Allow User Scripts).
+        </li>
+        <li>
+          <b>&gt; Если такого переключателя нет</b>
+          В адресной строке открой <code>chrome://extensions</code>
+          (в Edge — <code>edge://extensions</code>)
+          и включи «Режим разработчика» справа сверху.
+        </li>
+      </ul>
+      <p style="margin-top:1rem">
+        Потом обнови страницу вара. Если совсем непонятно —
+        <a href="https://www.tampermonkey.net/faq.php?locale=ru&amp;q=Q209" target="_blank" rel="noopener"> FAQ Tampermonkey</a>
+        или напиши мне в ЛС.
+      </p>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <p class="contact">
+      <a href="https://catwar.su/cat965285">ЛС: Ромашковый (965285)</a>
+    </p>
+    <p>Если что-то не работает или хочется попросить фичу — пишите в ЛС на варе =)</p>
+    <p class="tiny">Я не знаю Хвойницу и не имею к ней никакого отношения, меня просто попросили починить Варомод.</p>
+  </footer>
+</body>
+</html>
